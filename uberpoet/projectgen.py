@@ -81,11 +81,11 @@ class BuckProjectGenerator(object):
         return (",\n" + (" " * 8)).join(items)
 
     def make_dep_list(self, items):
-        return self.make_list_str(["'/{0}/{1}:{1}'".format(self.buck_app_root, i) for i in items])
+        return self.make_list_str(["'//{1}:{1}'".format(self.buck_app_root, i) for i in items])
 
     def make_scheme_list(self, items):
         return self.make_list_str(
-            ["{2: <20} :'/{0}/{1}:{1}Scheme'".format(self.buck_app_root, i, "'{}'".format(i)) for i in items])
+            ["{2: <20} :'//{1}:{1}Scheme'".format(self.buck_app_root, i, "'{}'".format(i)) for i in items])
 
     # Generation Functions
 
@@ -104,7 +104,7 @@ class BuckProjectGenerator(object):
 
         app_files = {
             "main.swift": self.gen_app_main(app_node, module_index),
-            "BUCK": self.gen_app_buck(app_node, library_node_list),
+            "BUILD": self.gen_app_buck(app_node, library_node_list),
         }
 
         self.copy_resource("Info.plist", join(app_module_dir, "Info.plist"))
@@ -145,7 +145,7 @@ class BuckProjectGenerator(object):
         makedir(files_dir_path)
 
         # Write BUCK File
-        buck_path = join(module_dir_path, "BUCK")
+        buck_path = join(module_dir_path, "BUILD")
         self.write_file(buck_path, buck_text)
 
         # Write Swift Files
